@@ -1,0 +1,31 @@
+version: "3"
+
+
+services:
+  database:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
+  api:
+    build: .
+
+    volumes:
+      - .:/cars
+
+    ports:
+      - "3434:3434"
+
+    command:
+      - uvicorn
+      - main:app
+      - --host=0.0.0.0
+      - --port=3434
+
+    depends_on:
+      - database
+
+volumes:
+  postgres_data:
